@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Refugio Andino Hub | Sistema de Gestión Hotelera y Turística - Cusco</title>
+  <!-- Tailwind CSS CDN para estilos modernos y responsivos Mobile-First -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Plus Jakarta Sans & Inter para estética boutique moderna -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome para iconografía limpia -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            andino: {
+              forest: '#1B3B2B',      /* Verde bosque andino profundo */
+              forestLight: '#28543E',
+              terracotta: '#C2593F',  /* Terracota / cobre andino */
+              terracottaDark: '#A3442D',
+              gold: '#D49A42',        /* Oro inca cálido */
+              cream: '#FAF7F2',       /* Crema cálido de fondo */
+              sand: '#EFE9DF',        /* Arena suave para bordes/tarjetas */
+              ink: '#1F2421'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #FAF7F2;
+      color: #1F2421;
+    }
+    .font-display {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    /* Animación suave para transiciones de vistas y notificaciones */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.25s ease-out forwards;
+    }
+    /* Estilo sutil de patrón textil andino en cabecera */
+    .andean-border {
+      background-image: repeating-linear-gradient(
+        90deg,
+        #C2593F 0px, #C2593F 12px,
+        #D49A42 12px, #D49A42 24px,
+        #1B3B2B 24px, #1B3B2B 36px
+      );
+      height: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-andino-terracotta selection:text-white">
+
+  <!-- ===================================================================== -->
+  <!-- SISTEMA DE NOTIFICACIONES TOAST (Reemplaza alert() nativo)            -->
+  <!-- ===================================================================== -->
+  <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full px-4 sm:px-0 pointer-events-none"></div>
+
+  <!-- ===================================================================== -->
+  <!-- MÓDULO 1: PANTALLA DE AUTENTICACIÓN / LOGIN (HU-01 - Jerry Bossard)   -->
+  <!-- ===================================================================== -->
+  <section id="auth-screen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-andino-forest via-[#163023] to-[#0F2218]">
+    <div class="w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 border border-white/10">
+      
+      <!-- Panel Izquierdo: Identidad de Marca Refugio Andino Boutique -->
+      <div class="lg:col-span-5 bg-andino-forest text-white p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden">
+        <div class="absolute -right-12 -top-12 w-48 h-48 rounded-full bg-andino-terracotta/20 blur-2xl"></div>
+        <div class="absolute -left-12 -bottom-12 w-48 h-48 rounded-full bg-andino-gold/20 blur-2xl"></div>
+
+        <div class="relative z-10">
+          <div class="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-sm px-3.5 py-1.5 rounded-full text-xs font-medium text-andino-gold mb-6 border border-white/10">
+            <i class="fa-solid fa-mountain-sun"></i>
+            <span>Cusco, Perú • 4 Propiedades Boutique</span>
+          </div>
+          <h1 class="font-display text-3xl font-extrabold tracking-tight leading-tight">
+            Refugio Andino <span class="text-andino-gold">Hub</span>
+          </h1>
+          <p class="mt-3 text-sm text-emerald-100/80 leading-relaxed">
+            Plataforma centralizada de gestión hotelera, control de huéspedes sin duplicados y reserva de actividades con bloqueo anti-overbooking en tiempo real.
+          </p>
+        </div>
+
+        <div class="relative z-10 mt-8 space-y-3 border-t border-white/15 pt-6 text-xs text-emerald-100/90">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span>Sede Plaza de Armas (Cusco Centro)</span>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span>Sede Barrio San Blas</span>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span>Sede Valle Sagrado (Urubamba)</span>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span>Sede Ollantaytambo</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel Derecho: Formulario de Acceso & Accesos Rápidos de Demostración -->
+      <div class="lg:col-span-7 p-8 sm:p-10 bg-andino-cream flex flex-col justify-center">
+        <div class="mb-6">
+          <span class="text-xs font-semibold uppercase tracking-wider text-andino-terracotta">Módulo HU-01 • Autenticación Segura</span>
+          <h2 class="font-display text-2xl font-bold text-andino-ink mt-1">Iniciar Sesión en el Sistema</h2>
+          <p class="text-sm text-stone-600 mt-1">Ingresa tus credenciales corporativas o selecciona un rol de demostración.</p>
+        </div>
+
+        <!-- Formulario estándar con validación -->
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label for="login-email" class="block text-xs font-semibold text-stone-700 mb-1.5">Correo Electrónico Corporativo</label>
+            <div class="relative">
+              <i class="fa-solid fa-envelope absolute left-3.5 top-3.5 text-stone-400 text-sm"></i>
+              <input id="login-email" type="email" value="recepcion.cusco@refugioandino.pe" required
+                class="w-full pl-10 pr-4 py-2.5 bg-white border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-andino-forest focus:border-transparent"
+                placeholder="usuario@refugioandino.pe" />
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="login-password" class="block text-xs font-semibold text-stone-700">Contraseña</label>
+              <button type="button" onclick="openRecoveryModal()" class="text-xs font-semibold text-andino-terracotta hover:underline">
+                ¿Olvidaste tu contraseña?
+              </button>
+            </div>
+            <div class="relative">
+              <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-stone-400 text-sm"></i>
+              <input id="login-password" type="password" value="Andino2026*" required
+                class="w-full pl-10 pr-4 py-2.5 bg-white border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-andino-forest focus:border-transparent"
+                placeholder="••••••••" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="login-role" class="block text-xs font-semibold text-stone-700 mb-1.5">Rol de Acceso</label>
+              <select id="login-role" class="w-full px-3.5 py-2.5 bg-white border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-andino-forest">
+                <option value="recepcionista">Recepcionista (Operaciones)</option>
+                <option value="guia">Guía de Tours (Ruta / QR)</option>
+                <option value="gerente">Gerente General (Reportes)</option>
+              </select>
+            </div>
+            <div>
+              <label for="login-sede" class="block text-xs font-semibold text-stone-700 mb-1.5">Sede Asignada</label>
+              <select id="login-sede" class="w-full px-3.5 py-2.5 bg-white border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-andino-forest">
+                <option value="Plaza de Armas">Sede Plaza de Armas</option>
+                <option value="San Blas">Sede San Blas</option>
+                <option value="Valle Sagrado">Sede Valle Sagrado</option>
+                <option value="Ollantaytambo">Sede Ollantaytambo</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit"
+            class="w-full py-3 px-4 bg-andino-forest hover:bg-andino-forestLight text-white font-semibold rounded-xl shadow-md transition flex items-center justify-center gap-2 text-sm">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            <span>Ingresar a Refugio Andino Hub</span>
+          </button>
+        </form>
+
+        <!-- Botones de Acceso Rápido para Evaluación / Demo -->
+        <div class="mt-6 pt-5 border-t border-stone-200">
+          <p class="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3">Acceso Rápido por Rol (Demo Evaluación):</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <button type="button" onclick="quickLogin('recepcionista', 'Camila Quispe', 'Plaza de Armas')"
+              class="p-2.5 bg-white hover:bg-andino-sand border border-stone-200 rounded-xl text-left transition group">
+              <div class="flex items-center gap-2 text-andino-forest font-bold text-xs">
+                <i class="fa-solid fa-bell-concierge text-andino-terracotta"></i>
+                <span>Recepcionista</span>
+              </div>
+              <p class="text-[11px] text-stone-500 mt-0.5">Clientes y Reservas</p>
+            </button>
+
+            <button type="button" onclick="quickLogin('guia', 'Mateo Huamán', 'Valle Sagrado')"
+              class="p-2.5 bg-white hover:bg-andino-sand border border-stone-200 rounded-xl text-left transition group">
+              <div class="flex items-center gap-2 text-andino-forest font-bold text-xs">
+                <i class="fa-solid fa-qrcode text-andino-terracotta"></i>
+                <span>Guía de Tours</span>
+              </div>
+              <p class="text-[11px] text-stone-500 mt-0.5">Escáner QR en Ruta</p>
+            </button>
+
+            <button type="button" onclick="quickLogin('gerente', 'Valeria Mendoza', 'Todas las Sedes')"
+              class="p-2.5 bg-white hover:bg-andino-sand border border-stone-200 rounded-xl text-left transition group">
+              <div class="flex items-center gap-2 text-andino-forest font-bold text-xs">
+                <i class="fa-solid fa-chart-line text-andino-terracotta"></i>
+                <span>Gerente General</span>
+              </div>
+              <p class="text-[11px] text-stone-500 mt-0.5">KPIs y Reportes CSV</p>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- APLICACIÓN PRINCIPAL (VISIBLE TRAS INICIAR SESIÓN)                    -->
+  <!-- ===================================================================== -->
+  <div id="app-shell" class="hidden flex-1 flex flex-col">
+    <div class="andean-border w-full"></div>
+
+    <!-- BARRA DE NAVEGACIÓN SUPERIOR -->
+    <header class="bg-andino-forest text-white sticky top-0 z-30 shadow-lg">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-center justify-between py-3.5 gap-3">
+          
+          <!-- Marca y Sedes -->
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-andino-terracotta flex items-center justify-center text-white shadow-inner">
+              <i class="fa-solid fa-mountain-sun text-lg"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-display font-extrabold text-lg tracking-tight">Refugio Andino <span class="text-andino-gold">Hub</span></span>
+                <span class="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-900/80 text-emerald-200 border border-emerald-700/60">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  4 Sedes Cusco Sincronizadas
+                </span>
+              </div>
+              <p class="text-xs text-emerald-200/80" id="header-user-info">Usuario: Camila Quispe • Sede Plaza de Armas</p>
+            </div>
+          </div>
+
+          <!-- Selector de Rol Activo + Botón Cerrar Sesión -->
+          <div class="flex items-center gap-2.5 ml-auto">
+            <div class="flex items-center bg-white/10 rounded-xl px-2.5 py-1.5 border border-white/15">
+              <label for="active-role-switcher" class="text-[11px] text-emerald-200 mr-2 hidden sm:inline">Rol activo:</label>
+              <select id="active-role-switcher" onchange="switchActiveRole(this.value)"
+                class="bg-transparent text-white text-xs font-semibold focus:outline-none cursor-pointer">
+                <option value="recepcionista" class="text-stone-900">Recepcionista</option>
+                <option value="guia" class="text-stone-900">Guía de Tours</option>
+                <option value="gerente" class="text-stone-900">Gerente General</option>
+              </select>
+            </div>
+
+            <button onclick="logout()" title="Cerrar Sesión (HU-01)"
+              class="px-3.5 py-2 rounded-xl bg-andino-terracotta hover:bg-andino-terracottaDark text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              <span class="hidden sm:inline">Cerrar Sesión</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Menú de Navegación por Módulos (Pestañas Responsivas) -->
+        <nav class="flex overflow-x-auto gap-1.5 pb-2.5 pt-1 border-t border-white/10 no-scrollbar" aria-label="Módulos del sistema">
+          <button onclick="navigateTo('dashboard')" id="nav-dashboard"
+            class="nav-tab px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition flex items-center gap-2 bg-white text-andino-forest shadow-sm">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Panel Ejecutivo (HU-04)</span>
+          </button>
+
+          <button onclick="navigateTo('clientes')" id="nav-clientes"
+            class="nav-tab px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition flex items-center gap-2 text-emerald-100 hover:bg-white/10">
+            <i class="fa-solid fa-users"></i>
+            <span>Clientes Centralizados (HU-02)</span>
+          </button>
+
+          <button onclick="navigateTo('actividades')" id="nav-actividades"
+            class="nav-tab px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition flex items-center gap-2 text-emerald-100 hover:bg-white/10">
+            <i class="fa-solid fa-compass"></i>
+            <span>Reservas y Cupos (HU-03)</span>
+          </button>
+
+          <button onclick="navigateTo('guia')" id="nav-guia"
+            class="nav-tab px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition flex items-center gap-2 text-emerald-100 hover:bg-white/10">
+            <i class="fa-solid fa-qrcode"></i>
+            <span>Validador QR Guía (Móvil)</span>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL DINÁMICO -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+
+      <!-- ================================================================= -->
+      <!-- VISTA 1: PANEL PRINCIPAL / DASHBOARD EJECUTIVO (HU-04)            -->
+      <!-- ================================================================= -->
+      <section id="view-dashboard" class="module-view animate-fade-in space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-andino-terracotta">Módulo HU-04 • Control Multi-Propiedad</span>
+            <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-andino-ink">Panel Operativo Consolidado — Cusco</h1>
+            <p class="text-sm text-stone-600 mt-0.5">Monitoreo en tiempo real de ocupación hotelera y disponibilidad de tours en las 4 sedes.</p>
+          </div>
+
+          <button onclick="exportOccupancyCSV()"
+            class="px-4 py-2.5 bg-andino-forest hover:bg-andino-forestLight text-white text-xs sm:text-sm font-semibold rounded-xl shadow-sm transition flex items-center justify-center gap-2 self-start sm:self-auto">
+            <i class="fa-solid fa-file-csv text-andino-gold text-base"></i>
+            <span>Exportar Reporte de Ocupación (CSV)</span>
+          </button>
+        </div>
+
+        <!-- Tarjetas KPIs en Tiempo Real -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white p-5 rounded-2xl border border-andino-sand shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-stone-500 uppercase">Ocupación Global (4 Sedes)</span>
+              <span class="w-9 h-9 rounded-xl bg-emerald-50 text-andino-forest flex items-center justify-center">
+                <i class="fa-solid fa-bed"></i>
+              </span>
+            </div>
+            <div class="mt-3 flex items-baseline gap-2">
+              <span id="kpi-ocupacion" class="font-display text-3xl font-extrabold text-andino-ink">84%</span>
+              <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">67 / 80 hab.</span>
+            </div>
+            <p class="text-xs text-stone-500 mt-1.5">Temporada Alta Cusco • Sincronizado</p>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-andino-sand shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-stone-500 uppercase">Huéspedes Únicos</span>
+              <span class="w-9 h-9 rounded-xl bg-amber-50 text-andino-gold flex items-center justify-center">
+                <i class="fa-solid fa-id-card"></i>
+              </span>
+            </div>
+            <div class="mt-3 flex items-baseline gap-2">
+              <span id="kpi-clientes" class="font-display text-3xl font-extrabold text-andino-ink">6</span>
+              <span class="text-xs font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">0 duplicados</span>
+            </div>
+            <p class="text-xs text-stone-500 mt-1.5">Base centralizada DNI / Pasaporte</p>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-andino-sand shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-stone-500 uppercase">Cupos Tours Hoy</span>
+              <span class="w-9 h-9 rounded-xl bg-orange-50 text-andino-terracotta flex items-center justify-center">
+                <i class="fa-solid fa-person-hiking"></i>
+              </span>
+            </div>
+            <div class="mt-3 flex items-baseline gap-2">
+              <span id="kpi-cupos" class="font-display text-3xl font-extrabold text-andino-ink">18</span>
+              <span id="kpi-cupos-total" class="text-xs font-semibold text-stone-600">de 52 cupos</span>
+            </div>
+            <p class="text-xs text-stone-500 mt-1.5">Actualización transaccional inmediata</p>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-emerald-200 shadow-sm bg-gradient-to-br from-white to-emerald-50/50">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-emerald-800 uppercase">Alertas Overbooking</span>
+              <span class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
+                <i class="fa-solid fa-shield-check"></i>
+              </span>
+            </div>
+            <div class="mt-3 flex items-baseline gap-2">
+              <span class="font-display text-3xl font-extrabold text-emerald-700">0</span>
+              <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">BLOQUEO ACTIVO</span>
+            </div>
+            <p class="text-xs text-emerald-800/80 mt-1.5">Control estricto de aforo en línea</p>
+          </div>
+        </div>
+
+        <!-- Filtro y Tabla Consolidada de Disponibilidad por Propiedad -->
+        <div class="bg-white rounded-2xl border border-andino-sand shadow-sm overflow-hidden">
+          <div class="p-5 border-b border-andino-sand flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="font-display font-bold text-lg text-andino-ink">Disponibilidad de Habitaciones por Propiedad</h2>
+              <p class="text-xs text-stone-500">Vista unificada para evitar sobreventa entre recepciones de Cusco</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <select id="filter-dashboard-sede" onchange="renderPropertiesTable()"
+                class="px-3 py-2 bg-andino-cream border border-stone-300 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-andino-forest">
+                <option value="TODAS">Todas las sedes (4)</option>
+                <option value="Plaza de Armas">Sede Plaza de Armas</option>
+                <option value="San Blas">Sede San Blas</option>
+                <option value="Valle Sagrado">Sede Valle Sagrado</option>
+                <option value="Ollantaytambo">Sede Ollantaytambo</option>
+              </select>
+              <input type="date" id="filter-dashboard-date" value="2026-11-25" onchange="renderPropertiesTable()"
+                class="px-3 py-2 bg-andino-cream border border-stone-300 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-andino-forest" />
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-andino-cream text-stone-600 text-[11px] uppercase tracking-wider border-b border-andino-sand">
+                  <th class="py-3.5 px-5 font-bold">Propiedad Boutique</th>
+                  <th class="py-3.5 px-5 font-bold">Ubicación</th>
+                  <th class="py-3.5 px-5 font-bold text-center">Capacidad Total</th>
+                  <th class="py-3.5 px-5 font-bold text-center">Ocupadas</th>
+                  <th class="py-3.5 px-5 font-bold text-center">Disponibles</th>
+                  <th class="py-3.5 px-5 font-bold">Nivel Ocupación</th>
+                  <th class="py-3.5 px-5 font-bold text-right">Estado Operativo</th>
+                </tr>
+              </thead>
+              <tbody id="properties-table-body" class="divide-y divide-andino-sand text-sm">
+                <!-- Renderizado dinámico por JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VISTA 2: GESTIÓN CENTRALIZADA DE CLIENTES (HU-02 - Martín)        -->
+      <!-- ================================================================= -->
+      <section id="view-clientes" class="module-view hidden animate-fade-in space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-andino-terracotta">Módulo HU-02 • Base Única Multi-Sede</span>
+            <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-andino-ink">Gestión Centralizada de Huéspedes</h1>
+            <p class="text-sm text-stone-600 mt-0.5">Registro unificado con validación automática de DNI/Pasaporte para erradicar fichas duplicadas.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          <!-- Formulario de Registro con Validación Anti-Duplicados -->
+          <div class="lg:col-span-5 bg-white p-6 rounded-2xl border border-andino-sand shadow-sm self-start">
+            <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-andino-sand">
+              <div class="w-8 h-8 rounded-lg bg-andino-forest text-white flex items-center justify-center text-sm">
+                <i class="fa-solid fa-user-plus"></i>
+              </div>
+              <div>
+                <h2 class="font-display font-bold text-base text-andino-ink">Registrar Nuevo Huésped</h2>
+                <p class="text-[11px] text-stone-500">Verifica unicidad en las 4 sedes de Cusco</p>
+              </div>
+            </div>
+
+            <!-- Alerta de Duplicado Detectado -->
+            <div id="duplicate-alert" class="hidden mb-4 p-3.5 rounded-xl bg-red-50 border border-red-300 text-red-800 text-xs space-y-1">
+              <div class="flex items-center gap-2 font-bold text-red-900">
+                <i class="fa-solid fa-triangle-exclamation text-red-600"></i>
+                <span>¡Registro Bloqueado! Huésped Duplicado</span>
+              </div>
+              <p id="duplicate-alert-msg">Este documento ya se encuentra registrado en otra sede.</p>
+            </div>
+
+            <form id="client-form" class="space-y-3.5">
+              <div>
+                <label class="block text-xs font-semibold text-stone-700 mb-1">Nombre Completo *</label>
+                <input type="text" id="client-name" required placeholder="Ej: Elena Rojas Paredes"
+                  class="w-full px-3.5 py-2 bg-andino-cream/60 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-andino-forest" />
+              </div>
+
+              <div class="grid grid-cols-5 gap-2.5">
+                <div class="col-span-2">
+                  <label class="block text-xs font-semibold text-stone-700 mb-1">Tipo Doc. *</label>
+                  <select id="client-doc-type"
+                    class="w-full px-3 py-2 bg-andino-cream/60 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-andino-forest">
+                    <option value="DNI">DNI</option>
+                    <option value="Pasaporte">Pasaporte</option>
+                    <option value="CE">Carné Ext.</option>
+                  </select>
+                </div>
+                <div class="col-span-3">
+                  <label class="block text-xs font-semibold text-stone-700 mb-1">N° Documento *</label>
+                  <input type="text" id="client-doc-num" required placeholder="Ej: 45891234 o P998877"
+                    class="w-full px-3.5 py-2 bg-andino-cream/60 border border-stone-300 rounded-xl text-sm uppercase focus:outline-none focus:ring-2 focus:ring-andino-forest" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block text-xs font-semibold text-stone-700 mb-1">Nacionalidad *</label>
+                  <input type="text" id="client-country" required placeholder="Ej: Perú / Chile / España"
+                    class="w-full px-3.5 py-2 bg-andino-cream/60 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-andino-forest" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-stone-700 mb-1">Teléfono / WhatsApp *</label>
+                  <input type="tel" id="client-phone" required placeholder="+51 984 123 456"
+                    class="w-full px-3.5 py-2 bg-andino-cream/60 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-andino-forest" />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-stone-700 mb-1">Correo Electrónico *</label>
+                <input type="email" id="client-email" required placeholder="huesped@correo.com"
+                  class="w-full px-3.5 py-2 bg-andino-cream/60 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-andino-forest" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-stone-700 mb-1">Sede de Estadía Actual *</label>
+                <select id="client-sede"
+                  class="w-full px-3.5 py-2 bg-andino-cream/60 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-andino-forest">
+                  <option value="Plaza de Armas">Sede Plaza de Armas</option>
+                  <option value="San Blas">Sede San Blas</option>
+                  <option value="Valle Sagrado">Sede Valle Sagrado</option>
+                  <option value="Ollantaytambo">Sede Ollantaytambo</option>
+                </select>
+              </div>
+
+              <button type="submit"
+                class="w-full py-2.5 px-4 bg-andino-terracotta hover:bg-andino-terracottaDark text-white font-semibold rounded-xl shadow-sm transition flex items-center justify-center gap-2 text-sm">
+                <i class="fa-solid fa-check-circle"></i>
+                <span>Validar y Guardar Ficha Única</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Directorio Centralizado e Historial Unificado -->
+          <div class="lg:col-span-7 bg-white rounded-2xl border border-andino-sand shadow-sm overflow-hidden flex flex-col">
+            <div class="p-5 border-b border-andino-sand flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h2 class="font-display font-bold text-base text-andino-ink">Directorio Único de Huéspedes</h2>
+                <p class="text-xs text-stone-500">Consulta instantánea (&lt; 2s) con historial de sedes y tours</p>
+              </div>
+              <div class="relative w-full sm:w-64">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-stone-400 text-xs"></i>
+                <input type="text" id="client-search" oninput="renderClientsTable()"
+                  placeholder="Buscar nombre, DNI o pasaporte..."
+                  class="w-full pl-8 pr-3 py-2 bg-andino-cream border border-stone-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-andino-forest" />
+              </div>
+            </div>
+
+            <div class="overflow-x-auto flex-1">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-andino-cream text-stone-600 text-[11px] uppercase tracking-wider border-b border-andino-sand">
+                    <th class="py-3 px-4 font-bold">Huésped / Contacto</th>
+                    <th class="py-3 px-4 font-bold">Documento</th>
+                    <th class="py-3 px-4 font-bold">Sede Actual & Historial</th>
+                    <th class="py-3 px-4 font-bold text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="clients-table-body" class="divide-y divide-andino-sand text-xs sm:text-sm">
+                  <!-- Renderizado dinámico por JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VISTA 3: RESERVA DE ACTIVIDADES Y ANTI-OVERBOOKING (HU-03 - Iván) -->
+      <!-- ================================================================= -->
+      <section id="view-actividades" class="module-view hidden animate-fade-in space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-andino-terracotta">Módulo HU-03 • Control Transaccional de Cupos</span>
+            <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-andino-ink">Catálogo y Reserva de Actividades Turísticas</h1>
+            <p class="text-sm text-stone-600 mt-0.5">Bloqueo automático de sobre-reservas en tiempo real y emisión de tickets digitales QR.</p>
+          </div>
+        </div>
+
+        <!-- Tarjetas del Catálogo de Tours en Cusco -->
+        <div id="tours-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- Renderizado dinámico por JS -->
+        </div>
+
+        <!-- Formulario de Nueva Reserva + Listado de Vouchers QR Emitidos -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
+          
+          <!-- Formulario de Reserva -->
+          <div class="lg:col-span-5 bg-white p-6 rounded-2xl border border-andino-sand shadow-sm self-start">
+            <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-andino-sand">
+              <div class="w-8 h-8 rounded-lg bg-andino-terracotta text-white flex items-center justify-center text-sm">
+                <i class="fa-solid fa-ticket"></i>
+              </div>
+              <div>
+                <h2 class="font-display font-bold text-base text-andino-ink">Reservar Excursión / Tour</h2>
+                <p class="text-[11px] text-stone-500">Descuenta aforo y genera voucher QR al instante</p>
+              </div>
+            </div>
+
+            <form id="booking-form" class="space-y-3.5">
+              <div>
+                <label class="block text-xs font-semibold text-stone-700 mb-1">Seleccionar Huésped Registrado *</label>
+                <select id="booking-client" required
+                  class="w-full px-3.5 py-2 bg-andino-cream/60 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-andino-forest">
+                  <!-- Opciones cargadas dinámicamente -->
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-stone-700 mb-1">Actividad Turística *</label>
+                <select id="booking-tour" required onchange="updateBookingAvailabilityHint()"
+                  class="w-full px-3.5 py-2 bg-andino-cream/60 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-andino-forest">
+                  <!-- Opciones cargadas dinámicamente -->
+                </select>
+                <p id="booking-availability-hint" class="text-[11px] font-semibold text-emerald-700 mt-1"></p>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-stone-700 mb-1">N° Pasajeros *</label>
+                  <input type="number" id="booking-pax" min="1" max="15" value="2" required
+                    class="w-full px-3.5 py-2 bg-andino-cream/60 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-andino-forest" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-stone-700 mb-1">Fecha Excursión *</label>
+                  <input type="date" id="booking-date" value="2026-11-26" required
+                    class="w-full px-3.5 py-2 bg-andino-cream/60 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-andino-forest" />
+                </div>
+              </div>
+
+              <button type="submit" id="booking-submit-btn"
+                class="w-full py-2.5 px-4 bg-andino-forest hover:bg-andino-forestLight text-white font-semibold rounded-xl shadow-sm transition flex items-center justify-center gap-2 text-sm">
+                <i class="fa-solid fa-qrcode"></i>
+                <span>Confirmar Reserva y Generar Ticket QR</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Listado de Reservas Activas y Tickets QR -->
+          <div class="lg:col-span-7 bg-white rounded-2xl border border-andino-sand shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-andino-sand flex items-center justify-between">
+              <div>
+                <h2 class="font-display font-bold text-base text-andino-ink">Tickets Digitales QR Emitidos</h2>
+                <p class="text-xs text-stone-500">Haz clic en "Ver Ticket QR" para mostrar el pase o cancela para liberar cupos</p>
+              </div>
+              <span id="bookings-count-badge" class="px-2.5 py-1 rounded-full bg-andino-cream text-andino-forest font-bold text-xs border border-andino-sand">
+                0 activas
+              </span>
+            </div>
+
+            <div id="bookings-list" class="divide-y divide-andino-sand max-h-[430px] overflow-y-auto">
+              <!-- Renderizado dinámico por JS -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VISTA 4: PANEL MÓVIL PARA GUÍAS EN RUTA (VALIDACIÓN QR)           -->
+      <!-- ================================================================= -->
+      <section id="view-guia" class="module-view hidden animate-fade-in">
+        <div class="max-w-xl mx-auto space-y-5">
+          <div class="text-center">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-andino-terracotta/10 text-andino-terracotta text-xs font-bold">
+              <i class="fa-solid fa-mobile-screen-button"></i> Vista Mobile-First • Guía en Ruta
+            </span>
+            <h1 class="font-display text-2xl font-extrabold text-andino-ink mt-2">Validador de Tickets QR en Ruta</h1>
+            <p class="text-xs sm:text-sm text-stone-600 mt-1">Verifica la autenticidad del voucher del turista antes de abordar el transporte.</p>
+          </div>
+
+          <!-- Simulador de Escáner Móvil -->
+          <div class="bg-white rounded-3xl border border-andino-sand shadow-md p-6 space-y-5">
+            <div class="bg-andino-forest rounded-2xl p-5 text-white text-center relative overflow-hidden">
+              <div class="w-36 h-36 mx-auto border-2 border-dashed border-andino-gold rounded-2xl flex flex-col items-center justify-center bg-white/5 relative">
+                <i class="fa-solid fa-qrcode text-5xl text-andino-gold mb-2"></i>
+                <span class="text-[11px] text-emerald-100">Listo para lectura QR</span>
+              </div>
+              <p class="text-xs text-emerald-200 mt-3">Selecciona un ticket emitido o ingresa el código manualmente</p>
+            </div>
+
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs font-semibold text-stone-700 mb-1">Seleccionar Ticket Rápido (Simulación Escaneo):</label>
+                <select id="scanner-ticket-select" onchange="syncScannerInput()"
+                  class="w-full px-3.5 py-2.5 bg-andino-cream border border-stone-300 rounded-xl text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-andino-forest">
+                  <!-- Opciones dinámicas -->
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-stone-700 mb-1">Código de Voucher QR:</label>
+                <div class="flex gap-2">
+                  <input type="text" id="scanner-code-input" placeholder="Ej: RAB-QR-1001"
+                    class="flex-1 px-3.5 py-2.5 bg-white border border-stone-300 rounded-xl text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-andino-forest" />
+                  <button type="button" onclick="validateTicketQR()"
+                    class="px-5 py-2.5 bg-andino-terracotta hover:bg-andino-terracottaDark text-white font-semibold rounded-xl text-sm transition flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-check-double"></i>
+                    <span>Validar</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Resultado de Validación del Ticket -->
+            <div id="scanner-result" class="hidden rounded-2xl p-4 border text-sm">
+              <!-- Se llena dinámicamente -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="bg-white border-t border-andino-sand py-4 mt-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-stone-500">
+        <p><strong class="text-andino-forest">Refugio Andino Hub</strong> — Cadena Hotelera Boutique (Cusco, Perú)</p>
+        <p>Prototipo Funcional MVP v1.0 • Ingeniería de Software (HU-01, HU-02, HU-03, HU-04)</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 1: RECUPERAR CONTRASEÑA (HU-01)                                 -->
+  <!-- ===================================================================== -->
+  <div id="recovery-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl animate-fade-in">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-display font-bold text-lg text-andino-ink">Recuperar Contraseña</h3>
+        <button onclick="closeRecoveryModal()" class="text-stone-400 hover:text-stone-700">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <p class="text-xs text-stone-600 mb-4">
+        Ingresa tu correo corporativo registrado. Te enviaremos un enlace temporal seguro para restablecer tu clave de acceso.
+      </p>
+      <form onsubmit="handlePasswordRecovery(event)" class="space-y-4">
+        <input type="email" id="recovery-email" required placeholder="usuario@refugioandino.pe"
+          class="w-full px-3.5 py-2.5 bg-andino-cream border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-andino-forest" />
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeRecoveryModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-stone-600 hover:bg-stone-100">
+            Cancelar
+          </button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold bg-andino-forest text-white hover:bg-andino-forestLight">
+            Enviar Enlace Seguro
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 2: EDITAR DATOS DE HUÉSPED (HU-02)                              -->
+  <!-- ===================================================================== -->
+  <div id="edit-client-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl animate-fade-in">
+      <div class="flex items-center justify-between mb-3 pb-2 border-b border-andino-sand">
+        <h3 class="font-display font-bold text-lg text-andino-ink">Editar Ficha de Huésped</h3>
+        <button onclick="closeEditClientModal()" class="text-stone-400 hover:text-stone-700">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <form id="edit-client-form" onsubmit="saveEditedClient(event)" class="space-y-3">
+        <input type="hidden" id="edit-client-id" />
+        <div>
+          <label class="block text-xs font-semibold text-stone-700 mb-1">Nombre Completo</label>
+          <input type="text" id="edit-client-name" required class="w-full px-3.5 py-2 bg-andino-cream border border-stone-300 rounded-xl text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-stone-700 mb-1">Correo Electrónico</label>
+          <input type="email" id="edit-client-email" required class="w-full px-3.5 py-2 bg-andino-cream border border-stone-300 rounded-xl text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-stone-700 mb-1">Teléfono</label>
+          <input type="text" id="edit-client-phone" required class="w-full px-3.5 py-2 bg-andino-cream border border-stone-300 rounded-xl text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-stone-700 mb-1">Sede Actual</label>
+          <select id="edit-client-sede" class="w-full px-3.5 py-2 bg-andino-cream border border-stone-300 rounded-xl text-sm">
+            <option value="Plaza de Armas">Sede Plaza de Armas</option>
+            <option value="San Blas">Sede San Blas</option>
+            <option value="Valle Sagrado">Sede Valle Sagrado</option>
+            <option value="Ollantaytambo">Sede Ollantaytambo</option>
+          </select>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeEditClientModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-stone-600 hover:bg-stone-100">
+            Cancelar
+          </button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold bg-andino-forest text-white hover:bg-andino-forestLight">
+            Guardar Cambios
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 3: VOUCHER / TICKET DIGITAL QR (HU-03)                          -->
+  <!-- ===================================================================== -->
+  <div id="qr-ticket-modal" class="hidden fixed inset-0 z-50 bg-black/65 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl animate-fade-in border border-andino-sand">
+      <div class="bg-andino-forest text-white p-5 text-center relative">
+        <button onclick="closeQRModal()" class="absolute right-4 top-4 text-white/70 hover:text-white">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+        <span class="text-[10px] uppercase tracking-widest text-andino-gold font-bold">Refugio Andino Hub • Cusco</span>
+        <h3 class="font-display font-extrabold text-lg mt-0.5">Voucher Digital de Excursión</h3>
+      </div>
+
+      <div class="p-6 text-center space-y-4">
+        <!-- Código QR Generado Dinámicamente en SVG -->
+        <div id="qr-svg-container" class="w-44 h-44 mx-auto p-3 bg-white border-2 border-andino-forest rounded-2xl shadow-inner flex items-center justify-center"></div>
+
+        <div>
+          <span id="modal-qr-code" class="font-mono font-bold text-base text-andino-terracotta tracking-wider">RAB-QR-1001</span>
+          <p id="modal-qr-status" class="text-xs font-semibold text-emerald-700 mt-0.5">● Confirmado • Cupo Garantizado</p>
+        </div>
+
+        <div class="bg-andino-cream rounded-2xl p-3.5 text-left text-xs space-y-1.5 border border-andino-sand">
+          <div class="flex justify-between">
+            <span class="text-stone-500">Huésped:</span>
+            <span id="modal-qr-client" class="font-bold text-andino-ink">---</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-stone-500">Documento:</span>
+            <span id="modal-qr-doc" class="font-semibold text-stone-700">---</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-stone-500">Actividad:</span>
+            <span id="modal-qr-tour" class="font-bold text-andino-forest text-right max-w-[180px]">---</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-stone-500">Fecha & Horario:</span>
+            <span id="modal-qr-schedule" class="font-semibold text-stone-700">---</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-stone-500">Pasajeros:</span>
+            <span id="modal-qr-pax" class="font-bold text-andino-ink">---</span>
+          </div>
+        </div>
+
+        <button onclick="closeQRModal()" class="w-full py-2.5 bg-andino-forest hover:bg-andino-forestLight text-white text-xs font-semibold rounded-xl transition">
+          Cerrar Pase Digital
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- LÓGICA DE LA APLICACIÓN (JAVASCRIPT VANILLA MODULAR)                  -->
+  <!-- ===================================================================== -->
+  <script>
+    // -----------------------------------------------------------------------
+    // 1. ESTADO INICIAL CON DATOS REALISTAS DE CUSCO, PERÚ
+    // -----------------------------------------------------------------------
+    const state = {
+      currentUser: null,
+      properties: [
+        { id: 'P1', name: 'Refugio Andino Plaza de Armas', district: 'Centro Histórico, Cusco', totalRooms: 26, occupiedRooms: 23, status: 'Alta Demanda' },
+        { id: 'P2', name: 'Refugio Andino San Blas', district: 'Barrio de los Artesanos, Cusco', totalRooms: 18, occupiedRooms: 15, status: 'Operativo' },
+        { id: 'P3', name: 'Refugio Andino Valle Sagrado', district: 'Urubamba, Valle Sagrado', totalRooms: 22, occupiedRooms: 18, status: 'Operativo' },
+        { id: 'P4', name: 'Refugio Andino Ollantaytambo', district: 'Acceso Machu Picchu', totalRooms: 14, occupiedRooms: 11, status: 'Operativo' }
+      ],
+      clients: [
+        {
+          id: 'C1',
+          name: 'Sofía Valdivia Contreras',
+          docType: 'DNI',
+          docNum: '72489103',
+          country: 'Perú',
+          phone: '+51 984 512 890',
+          email: 'sofia.valdivia@gmail.com',
+          currentSede: 'Plaza de Armas',
+          history: ['Estancia Plaza de Armas (Nov 2026)', 'Estancia Valle Sagrado (Ago 2025)']
+        },
+        {
+          id: 'C2',
+          name: 'Lucas Fernández Soto',
+          docType: 'Pasaporte',
+          docNum: 'CL9823412',
+          country: 'Chile',
+          phone: '+56 9 8765 4321',
+          email: 'lfernandez@correo.cl',
+          currentSede: 'San Blas',
+          history: ['Estancia San Blas (Nov 2026)']
+        },
+        {
+          id: 'C3',
+          name: 'Claire Moreau',
+          docType: 'Pasaporte',
+          docNum: 'FR4490128',
+          country: 'Francia',
+          phone: '+33 6 12 34 56 78',
+          email: 'claire.moreau@orange.fr',
+          currentSede: 'Valle Sagrado',
+          history: ['Estancia Valle Sagrado (Nov 2026)', 'Estancia Ollantaytambo (Nov 2026)']
+        },
+        {
+          id: 'C4',
+          name: 'Diego Armando Mamani',
+          docType: 'DNI',
+          docNum: '41892345',
+          country: 'Perú',
+          phone: '+51 951 223 344',
+          email: 'dmamani.cusco@outlook.com',
+          currentSede: 'Ollantaytambo',
+          history: ['Estancia Ollantaytambo (Nov 2026)']
+        },
+        {
+          id: 'C5',
+          name: 'Hannah Miller',
+          docType: 'Pasaporte',
+          docNum: 'US8834120',
+          country: 'Estados Unidos',
+          phone: '+1 415 890 1234',
+          email: 'hmiller@usmail.com',
+          currentSede: 'Plaza de Armas',
+          history: ['Estancia Plaza de Armas (Nov 2026)']
+        }
+      ],
+      tours: [
+        {
+          id: 'T1',
+          title: 'Trekking Montaña de 7 Colores (Vinicunca)',
+          category: 'Alta Montaña',
+          schedule: '04:30 AM - 04:30 PM',
+          duration: '12 horas',
+          guide: 'Mateo Huamán',
+          price: '$45 USD',
+          maxCapacity: 14,
+          booked: 11
+        },
+        {
+          id: 'T2',
+          title: 'Tour Valle Sagrado: Pisac, Moray y Ollantaytambo',
+          category: 'Arqueología & Cultura',
+          schedule: '07:30 AM - 06:30 PM',
+          duration: '11 horas',
+          guide: 'Lucía Condori',
+          price: '$55 USD',
+          maxCapacity: 16,
+          booked: 12
+        },
+        {
+          id: 'T3',
+          title: 'Cabalgata Salineras de Maras y Mirador Andino',
+          category: 'Aventura Ecuestre',
+          schedule: '09:00 AM - 01:30 PM',
+          duration: '4.5 horas',
+          guide: 'Carlos Ttito',
+          price: '$60 USD',
+          maxCapacity: 8,
+          booked: 8 // AGOTADO desde el inicio para demostrar bloqueo anti-overbooking
+        },
+        {
+          id: 'T4',
+          title: 'City Tour Cusco: Qorikancha y Sacsayhuamán',
+          category: 'Patrimonio Inca',
+          schedule: '01:30 PM - 06:00 PM',
+          duration: '4.5 horas',
+          guide: 'Mateo Huamán',
+          price: '$30 USD',
+          maxCapacity: 14,
+          booked: 3
+        }
+      ],
+      bookings: [
+        {
+          code: 'RAB-QR-1001',
+          clientId: 'C1',
+          tourId: 'T1',
+          pax: 2,
+          date: '2026-11-26',
+          status: 'Confirmado'
+        },
+        {
+          code: 'RAB-QR-1002',
+          clientId: 'C2',
+          tourId: 'T2',
+          pax: 3,
+          date: '2026-11-26',
+          status: 'Confirmado'
+        },
+        {
+          code: 'RAB-QR-1003',
+          clientId: 'C3',
+          tourId: 'T3',
+          pax: 2,
+          date: '2026-11-26',
+          status: 'Validado en Ruta'
+        }
+      ],
+      nextBookingSeq: 1004
+    };
+
+    // -----------------------------------------------------------------------
+    // 2. SISTEMA DE NOTIFICACIONES VISUALES (TOAST)
+    // -----------------------------------------------------------------------
+    function showToast(title, message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const colors = {
+        success: 'bg-andino-forest text-white border-emerald-400',
+        error: 'bg-red-800 text-white border-red-400',
+        warning: 'bg-amber-800 text-white border-amber-400'
+      };
+      const icons = {
+        success: 'fa-circle-check text-emerald-300',
+        error: 'fa-circle-exclamation text-red-300',
+        warning: 'fa-triangle-exclamation text-amber-300'
+      };
+
+      toast.className = `pointer-events-auto p-3.5 rounded-2xl shadow-xl border-l-4 flex items-start gap-3 animate-fade-in ${colors[type] || colors.success}`;
+      toast.innerHTML = `
+        <i class="fa-solid ${icons[type] || icons.success} mt-0.5"></i>
+        <div class="text-xs">
+          <p class="font-bold">${title}</p>
+          <p class="opacity-90 mt-0.5">${message}</p>
+        </div>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3600);
+    }
+
+    // -----------------------------------------------------------------------
+    // 3. MÓDULO HU-01: AUTENTICACIÓN Y CONTROL DE ROLES
+    // -----------------------------------------------------------------------
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const role = document.getElementById('login-role').value;
+      const sede = document.getElementById('login-sede').value;
+
+      const roleNames = {
+        recepcionista: 'Recepcionista',
+        guia: 'Guía de Tours',
+        gerente: 'Gerente General'
+      };
+
+      const userName = email.split('@')[0].replace('.', ' ').replace(/\b\w/g, l => l.toUpperCase());
+      enterApplication({ name: userName, role, roleLabel: roleNames[role], sede });
+    });
+
+    function quickLogin(role, name, sede) {
+      const roleNames = {
+        recepcionista: 'Recepcionista',
+        guia: 'Guía de Tours',
+        gerente: 'Gerente General'
+      };
+      enterApplication({ name, role, roleLabel: roleNames[role], sede });
+    }
+
+    function enterApplication(user) {
+      state.currentUser = user;
+      document.getElementById('auth-screen').classList.add('hidden');
+      document.getElementById('app-shell').classList.remove('hidden');
+
+      document.getElementById('active-role-switcher').value = user.role;
+      updateHeaderInfo();
+      renderAll();
+
+      // Redirigir automáticamente a la vista más relevante del rol elegido
+      if (user.role === 'guia') {
+        navigateTo('guia');
+      } else if (user.role === 'recepcionista') {
+        navigateTo('clientes');
+      } else {
+        navigateTo('dashboard');
+      }
+
+      showToast('Sesión Iniciada (HU-01)', `Bienvenido/a ${user.name} (${user.roleLabel})`);
+    }
+
+    function switchActiveRole(newRole) {
+      if (!state.currentUser) return;
+      const roleNames = {
+        recepcionista: 'Recepcionista',
+        guia: 'Guía de Tours',
+        gerente: 'Gerente General'
+      };
+      state.currentUser.role = newRole;
+      state.currentUser.roleLabel = roleNames[newRole];
+      updateHeaderInfo();
+
+      if (newRole === 'guia') navigateTo('guia');
+      else if (newRole === 'recepcionista') navigateTo('clientes');
+      else navigateTo('dashboard');
+
+      showToast('Cambio de Rol Activo', `Vista adaptada a: ${roleNames[newRole]}`);
+    }
+
+    function updateHeaderInfo() {
+      const u = state.currentUser;
+      document.getElementById('header-user-info').textContent = `${u.roleLabel}: ${u.name} • Sede ${u.sede}`;
+    }
+
+    function logout() {
+      state.currentUser = null;
+      document.getElementById('app-shell').classList.add('hidden');
+      document.getElementById('auth-screen').classList.remove('hidden');
+      showToast('Sesión Cerrada', 'Credenciales invalidadas correctamente.', 'warning');
+    }
+
+    function openRecoveryModal() {
+      document.getElementById('recovery-modal').classList.remove('hidden');
+    }
+    function closeRecoveryModal() {
+      document.getElementById('recovery-modal').classList.add('hidden');
+    }
+    function handlePasswordRecovery(e) {
+      e.preventDefault();
+      const email = document.getElementById('recovery-email').value;
+      closeRecoveryModal();
+      showToast('Enlace Enviado', `Se envió un token de recuperación seguro a ${email}.`);
+    }
+
+    // -----------------------------------------------------------------------
+    // 4. NAVEGACIÓN ENTRE VISTAS / MÓDULOS
+    // -----------------------------------------------------------------------
+    function navigateTo(viewId) {
+      document.querySelectorAll('.module-view').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById(`view-${viewId}`).classList.remove('hidden');
+
+      document.querySelectorAll('.nav-tab').forEach(btn => {
+        btn.classList.remove('bg-white', 'text-andino-forest', 'shadow-sm');
+        btn.classList.add('text-emerald-100', 'hover:bg-white/10');
+      });
+
+      const activeBtn = document.getElementById(`nav-${viewId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-emerald-100', 'hover:bg-white/10');
+        activeBtn.classList.add('bg-white', 'text-andino-forest', 'shadow-sm');
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // 5. MÓDULO HU-04: DASHBOARD EJECUTIVO Y EXPORTACIÓN CSV
+    // -----------------------------------------------------------------------
+    function updateKPIs() {
+      const totalRooms = state.properties.reduce((acc, p) => acc + p.totalRooms, 0);
+      const occupiedRooms = state.properties.reduce((acc, p) => acc + p.occupiedRooms, 0);
+      const occPct = Math.round((occupiedRooms / totalRooms) * 100);
+
+      const totalTourCap = state.tours.reduce((acc, t) => acc + t.maxCapacity, 0);
+      const availableTourSpots = state.tours.reduce((acc, t) => acc + (t.maxCapacity - t.booked), 0);
+
+      document.getElementById('kpi-ocupacion').textContent = `${occPct}%`;
+      document.getElementById('kpi-clientes').textContent = state.clients.length;
+      document.getElementById('kpi-cupos').textContent = availableTourSpots;
+      document.getElementById('kpi-cupos-total').textContent = `de ${totalTourCap} cupos`;
+    }
+
+    function renderPropertiesTable() {
+      const filterSede = document.getElementById('filter-dashboard-sede').value;
+      const tbody = document.getElementById('properties-table-body');
+
+      const filtered = filterSede === 'TODAS'
+        ? state.properties
+        : state.properties.filter(p => p.name.includes(filterSede));
+
+      tbody.innerHTML = filtered.map(prop => {
+        const available = prop.totalRooms - prop.occupiedRooms;
+        const pct = Math.round((prop.occupiedRooms / prop.totalRooms) * 100);
+        const barColor = pct >= 85 ? 'bg-andino-terracotta' : 'bg-andino-forest';
+
+        return `
+          <tr class="hover:bg-andino-cream/50 transition">
+            <td class="py-3.5 px-5 font-bold text-andino-ink">${prop.name}</td>
+            <td class="py-3.5 px-5 text-stone-600 text-xs">${prop.district}</td>
+            <td class="py-3.5 px-5 text-center font-semibold">${prop.totalRooms}</td>
+            <td class="py-3.5 px-5 text-center font-semibold text-stone-700">${prop.occupiedRooms}</td>
+            <td class="py-3.5 px-5 text-center">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">${available} libres</span>
+            </td>
+            <td class="py-3.5 px-5 w-44">
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-2 bg-stone-200 rounded-full overflow-hidden">
+                  <div class="${barColor} h-full rounded-full" style="width: ${pct}%"></div>
+                </div>
+                <span class="text-xs font-bold text-stone-700">${pct}%</span>
+              </div>
+            </td>
+            <td class="py-3.5 px-5 text-right">
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> ${prop.status}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function exportOccupancyCSV() {
+      const date = document.getElementById('filter-dashboard-date').value;
+      let csv = 'Propiedad,Ubicacion,Fecha,Habitaciones_Totales,Ocupadas,Disponibles,Porcentaje_Ocupacion\n';
+      state.properties.forEach(p => {
+        const disp = p.totalRooms - p.occupiedRooms;
+        const pct = Math.round((p.occupiedRooms / p.totalRooms) * 100);
+        csv += `"${p.name}","${p.district}","${date}",${p.totalRooms},${p.occupiedRooms},${disp},${pct}%\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `Reporte_Ocupacion_Refugio_Andino_${date}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast('Reporte Exportado (HU-04)', 'Archivo CSV de ocupación consolidada descargado.');
+    }
+
+    // -----------------------------------------------------------------------
+    // 6. MÓDULO HU-02: GESTIÓN CENTRALIZADA DE CLIENTES (ANTI-DUPLICADOS)
+    // -----------------------------------------------------------------------
+    document.getElementById('client-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('client-name').value.trim();
+      const docType = document.getElementById('client-doc-type').value;
+      const docNum = document.getElementById('client-doc-num').value.trim().toUpperCase();
+      const country = document.getElementById('client-country').value.trim();
+      const phone = document.getElementById('client-phone').value.trim();
+      const email = document.getElementById('client-email').value.trim();
+      const sede = document.getElementById('client-sede').value;
+
+      const alertBox = document.getElementById('duplicate-alert');
+      const alertMsg = document.getElementById('duplicate-alert-msg');
+
+      // Validación estricta de unicidad en todas las sedes
+      const existingClient = state.clients.find(c => c.docNum.toUpperCase() === docNum);
+      if (existingClient) {
+        alertBox.classList.remove('hidden');
+        alertMsg.innerHTML = `El documento <strong>${docType} ${docNum}</strong> ya pertenece a <strong>${existingClient.name}</strong>, registrado actualmente en <strong>Sede ${existingClient.currentSede}</strong>.`;
+        showToast('Duplicado Bloqueado (HU-02)', `El documento ${docNum} ya existe en Sede ${existingClient.currentSede}.`, 'error');
+        return;
+      }
+
+      alertBox.classList.add('hidden');
+
+      const newClient = {
+        id: 'C' + (state.clients.length + 1),
+        name,
+        docType,
+        docNum,
+        country,
+        phone,
+        email,
+        currentSede: sede,
+        history: [`Estancia ${sede} (Nov 2026)`]
+      };
+
+      state.clients.unshift(newClient);
+      this.reset();
+      renderAll();
+      showToast('Huésped Registrado', `${name} guardado en la base centralizada sin duplicados.`);
+    });
+
+    function renderClientsTable() {
+      const query = document.getElementById('client-search').value.trim().toLowerCase();
+      const tbody = document.getElementById('clients-table-body');
+
+      const filtered = state.clients.filter(c =>
+        c.name.toLowerCase().includes(query) ||
+        c.docNum.toLowerCase().includes(query) ||
+        c.currentSede.toLowerCase().includes(query)
+      );
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-stone-500 text-xs">No se encontraron huéspedes con ese criterio.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(c => {
+        const clientTours = state.bookings.filter(b => b.clientId === c.id && b.status !== 'Cancelado');
+        return `
+          <tr class="hover:bg-andino-cream/50 transition">
+            <td class="py-3.5 px-4">
+              <p class="font-bold text-andino-ink">${c.name}</p>
+              <p class="text-[11px] text-stone-500">${c.email} • ${c.phone}</p>
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="inline-block px-2 py-0.5 rounded bg-stone-100 text-stone-700 font-mono text-xs font-semibold">
+                ${c.docType}: ${c.docNum}
+              </span>
+              <p class="text-[11px] text-stone-500 mt-0.5">${c.country}</p>
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-andino-forest border border-emerald-200">
+                Sede ${c.currentSede}
+              </span>
+              <p class="text-[11px] text-stone-500 mt-1">
+                ${c.history.join(' • ')} ${clientTours.length > 0 ? `• <strong>${clientTours.length} tour(s)</strong>` : ''}
+              </p>
+            </td>
+            <td class="py-3.5 px-4 text-right">
+              <button onclick="openEditClientModal('${c.id}')"
+                class="px-3 py-1.5 rounded-lg bg-andino-cream hover:bg-andino-sand text-andino-forest font-semibold text-xs border border-stone-200 transition">
+                <i class="fa-solid fa-pen-to-square mr-1"></i> Editar
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function openEditClientModal(clientId) {
+      const client = state.clients.find(c => c.id === clientId);
+      if (!client) return;
+      document.getElementById('edit-client-id').value = client.id;
+      document.getElementById('edit-client-name').value = client.name;
+      document.getElementById('edit-client-email').value = client.email;
+      document.getElementById('edit-client-phone').value = client.phone;
+      document.getElementById('edit-client-sede').value = client.currentSede;
+      document.getElementById('edit-client-modal').classList.remove('hidden');
+    }
+
+    function closeEditClientModal() {
+      document.getElementById('edit-client-modal').classList.add('hidden');
+    }
+
+    function saveEditedClient(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit-client-id').value;
+      const client = state.clients.find(c => c.id === id);
+      if (!client) return;
+
+      const newSede = document.getElementById('edit-client-sede').value;
+      if (client.currentSede !== newSede) {
+        client.history.unshift(`Traslado a Sede ${newSede} (Nov 2026)`);
+      }
+
+      client.name = document.getElementById('edit-client-name').value.trim();
+      client.email = document.getElementById('edit-client-email').value.trim();
+      client.phone = document.getElementById('edit-client-phone').value.trim();
+      client.currentSede = newSede;
+
+      closeEditClientModal();
+      renderAll();
+      showToast('Ficha Actualizada', `Datos de ${client.name} sincronizados en todas las sedes.`);
+    }
+
+    // -----------------------------------------------------------------------
+    // 7. MÓDULO HU-03: RESERVA DE ACTIVIDADES, ANTI-OVERBOOKING Y QR
+    // -----------------------------------------------------------------------
+    function renderToursGrid() {
+      const grid = document.getElementById('tours-grid');
+      grid.innerHTML = state.tours.map(tour => {
+        const available = tour.maxCapacity - tour.booked;
+        const isSoldOut = available <= 0;
+        const pct = Math.round((tour.booked / tour.maxCapacity) * 100);
+
+        return `
+          <div class="bg-white rounded-2xl border ${isSoldOut ? 'border-red-300 bg-red-50/20' : 'border-andino-sand'} p-5 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-start justify-between gap-2">
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-andino-cream text-andino-terracotta border border-andino-sand">
+                  ${tour.category}
+                </span>
+                ${isSoldOut
+                  ? `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-red-600 text-white animate-pulse">AGOTADO - BLOQUEADO</span>`
+                  : `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">${available} cupos disponibles</span>`
+                }
+              </div>
+
+              <h3 class="font-display font-bold text-base sm:text-lg text-andino-ink mt-2.5">${tour.title}</h3>
+
+              <div class="grid grid-cols-2 gap-2 mt-3 text-xs text-stone-600">
+                <div><i class="fa-regular fa-clock text-andino-terracotta mr-1.5"></i>${tour.schedule}</div>
+                <div><i class="fa-solid fa-user-tie text-andino-forest mr-1.5"></i>Guía: ${tour.guide}</div>
+                <div><i class="fa-solid fa-hourglass-half text-stone-400 mr-1.5"></i>Duración: ${tour.duration}</div>
+                <div class="font-bold text-andino-forest"><i class="fa-solid fa-tag mr-1.5"></i>${tour.price} / pax</div>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-andino-sand">
+              <div class="flex justify-between text-xs font-semibold mb-1">
+                <span class="text-stone-600">Control de Aforo en Tiempo Real</span>
+                <span class="${isSoldOut ? 'text-red-700 font-bold' : 'text-andino-ink'}">${tour.booked} / ${tour.maxCapacity} cupos ocupados</span>
+              </div>
+              <div class="w-full h-2.5 bg-stone-200 rounded-full overflow-hidden">
+                <div class="${isSoldOut ? 'bg-red-600' : 'bg-andino-forest'} h-full rounded-full transition-all duration-300" style="width: ${pct}%"></div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function populateBookingSelectors() {
+      const clientSelect = document.getElementById('booking-client');
+      const tourSelect = document.getElementById('booking-tour');
+
+      clientSelect.innerHTML = state.clients.map(c =>
+        `<option value="${c.id}">${c.name} (${c.docType}: ${c.docNum} • Sede ${c.currentSede})</option>`
+      ).join('');
+
+      tourSelect.innerHTML = state.tours.map(t => {
+        const disp = t.maxCapacity - t.booked;
+        return `<option value="${t.id}" ${disp <= 0 ? 'disabled' : ''}>
+          ${t.title} ${disp <= 0 ? '[AGOTADO - BLOQUEADO]' : `(${disp} cupos libres)`}
+        </option>`;
+      }).join('');
+
+      updateBookingAvailabilityHint();
+    }
+
+    function updateBookingAvailabilityHint() {
+      const tourId = document.getElementById('booking-tour').value;
+      const tour = state.tours.find(t => t.id === tourId);
+      const hint = document.getElementById('booking-availability-hint');
+      if (!tour) return;
+
+      const disp = tour.maxCapacity - tour.booked;
+      if (disp <= 0) {
+        hint.className = 'text-[11px] font-bold text-red-600 mt-1';
+        hint.textContent = 'Sin cupos disponibles. Sistema anti-overbooking activado.';
+      } else {
+        hint.className = 'text-[11px] font-semibold text-emerald-700 mt-1';
+        hint.textContent = `Aforo verificado: quedan ${disp} cupos disponibles para reservar.`;
+      }
+    }
+
+    document.getElementById('booking-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const clientId = document.getElementById('booking-client').value;
+      const tourId = document.getElementById('booking-tour').value;
+      const pax = parseInt(document.getElementById('booking-pax').value, 10);
+      const date = document.getElementById('booking-date').value;
+
+      const tour = state.tours.find(t => t.id === tourId);
+      const client = state.clients.find(c => c.id === clientId);
+      if (!tour || !client) return;
+
+      const available = tour.maxCapacity - tour.booked;
+
+      // Control transaccional estricto anti-overbooking
+      if (pax > available) {
+        showToast(
+          'Bloqueo Anti-Overbooking (HU-03)',
+          `Solo quedan ${available} cupo(s) en "${tour.title}". No se puede reservar para ${pax} pasajeros.`,
+          'error'
+        );
+        return;
+      }
+
+      // Descontar cupo inmediatamente
+      tour.booked += pax;
+
+      const code = `RAB-QR-${state.nextBookingSeq++}`;
+      const newBooking = {
+        code,
+        clientId,
+        tourId,
+        pax,
+        date,
+        status: 'Confirmado'
+      };
+
+      state.bookings.unshift(newBooking);
+      renderAll();
+      openQRModal(code);
+      showToast('Reserva Confirmada y QR Generado', `Voucher ${code} emitido para ${client.name} (${pax} pax).`);
+    });
+
+    function cancelBooking(code) {
+      const booking = state.bookings.find(b => b.code === code);
+      if (!booking || booking.status === 'Cancelado') return;
+
+      const tour = state.tours.find(t => t.id === booking.tourId);
+      if (tour) {
+        tour.booked = Math.max(0, tour.booked - booking.pax);
+      }
+      booking.status = 'Cancelado';
+
+      renderAll();
+      showToast('Reserva Cancelada', `Se liberaron ${booking.pax} cupo(s) en tiempo real.`, 'warning');
+    }
+
+    function renderBookingsList() {
+      const list = document.getElementById('bookings-list');
+      const activeCount = state.bookings.filter(b => b.status !== 'Cancelado').length;
+      document.getElementById('bookings-count-badge').textContent = `${activeCount} activas`;
+
+      list.innerHTML = state.bookings.map(b => {
+        const client = state.clients.find(c => c.id === b.clientId);
+        const tour = state.tours.find(t => t.id === b.tourId);
+        const isCancelled = b.status === 'Cancelado';
+        const isValidated = b.status === 'Validado en Ruta';
+
+        let badgeClass = 'bg-emerald-100 text-emerald-800';
+        if (isCancelled) badgeClass = 'bg-stone-200 text-stone-600 line-through';
+        if (isValidated) badgeClass = 'bg-blue-100 text-blue-800';
+
+        return `
+          <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${isCancelled ? 'opacity-60 bg-stone-50' : 'hover:bg-andino-cream/40'}">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="font-mono font-bold text-xs text-andino-terracotta">${b.code}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${badgeClass}">${b.status}</span>
+              </div>
+              <p class="font-bold text-sm text-andino-ink">${client ? client.name : 'Huésped'} • <span class="text-andino-forest">${b.pax} pax</span></p>
+              <p class="text-xs text-stone-500">${tour ? tour.title : 'Tour'} (${b.date})</p>
+            </div>
+
+            ${!isCancelled ? `
+              <div class="flex items-center gap-2 self-end sm:self-center">
+                <button onclick="openQRModal('${b.code}')"
+                  class="px-3 py-1.5 rounded-xl bg-andino-forest text-white text-xs font-semibold hover:bg-andino-forestLight transition flex items-center gap-1.5">
+                  <i class="fa-solid fa-qrcode"></i> Ver Ticket QR
+                </button>
+                <button onclick="cancelBooking('${b.code}')" title="Cancelar y liberar cupos"
+                  class="px-2.5 py-1.5 rounded-xl bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 text-xs font-semibold transition">
+                  Cancelar
+                </button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Generador visual de Matriz QR determinística en SVG (sin dependencias externas)
+    function generateSVGQRCode(text) {
+      const size = 21;
+      let hash = 0;
+      for (let i = 0; i < text.length; i++) {
+        hash = ((hash << 5) - hash) + text.charCodeAt(i);
+        hash |= 0;
+      }
+
+      let rects = '';
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          const isFinder =
+            (x < 7 && y < 7) ||
+            (x >= size - 7 && y < 7) ||
+            (x < 7 && y >= size - 7);
+
+          let fill = false;
+          if (isFinder) {
+            const fx = x >= size - 7 ? x - (size - 7) : x;
+            const fy = y >= size - 7 ? y - (size - 7) : y;
+            fill = fx === 0 || fx === 6 || fy === 0 || fy === 6 || (fx >= 2 && fx <= 4 && fy >= 2 && fy <= 4);
+          } else {
+            const seed = Math.abs(Math.sin(hash + x * 17 + y * 31));
+            fill = seed > 0.48;
+          }
+
+          if (fill) {
+            rects += `<rect x="${x * 10}" y="${y * 10}" width="10" height="10" fill="#1B3B2B" />`;
+          }
+        }
+      }
+      return `<svg viewBox="0 0 210 210" class="w-full h-full">${rects}</svg>`;
+    }
+
+    function openQRModal(code) {
+      const booking = state.bookings.find(b => b.code === code);
+      if (!booking) return;
+      const client = state.clients.find(c => c.id === booking.clientId);
+      const tour = state.tours.find(t => t.id === booking.tourId);
+
+      document.getElementById('qr-svg-container').innerHTML = generateSVGQRCode(booking.code);
+      document.getElementById('modal-qr-code').textContent = booking.code;
+      document.getElementById('modal-qr-status').textContent = `● ${booking.status} • Cupo Garantizado`;
+      document.getElementById('modal-qr-client').textContent = client ? client.name : '---';
+      document.getElementById('modal-qr-doc').textContent = client ? `${client.docType} ${client.docNum} (Sede ${client.currentSede})` : '---';
+      document.getElementById('modal-qr-tour').textContent = tour ? tour.title : '---';
+      document.getElementById('modal-qr-schedule').textContent = `${booking.date} • ${tour ? tour.schedule : ''}`;
+      document.getElementById('modal-qr-pax').textContent = `${booking.pax} pasajero(s)`;
+
+      document.getElementById('qr-ticket-modal').classList.remove('hidden');
+    }
+
+    function closeQRModal() {
+      document.getElementById('qr-ticket-modal').classList.add('hidden');
+    }
+
+    // -----------------------------------------------------------------------
+    // 8. MÓDULO GUÍA EN RUTA: ESCÁNER Y VALIDADOR DE TICKETS QR
+    // -----------------------------------------------------------------------
+    function populateScannerOptions() {
+      const select = document.getElementById('scanner-ticket-select');
+      const activeBookings = state.bookings.filter(b => b.status !== 'Cancelado');
+
+      select.innerHTML = activeBookings.map(b => {
+        const client = state.clients.find(c => c.id === b.clientId);
+        return `<option value="${b.code}">${b.code} — ${client ? client.name : ''} (${b.status})</option>`;
+      }).join('');
+
+      syncScannerInput();
+    }
+
+    function syncScannerInput() {
+      const select = document.getElementById('scanner-ticket-select');
+      if (select.value) {
+        document.getElementById('scanner-code-input').value = select.value;
+      }
+    }
+
+    function validateTicketQR() {
+      const code = document.getElementById('scanner-code-input').value.trim().toUpperCase();
+      const resultBox = document.getElementById('scanner-result');
+      const booking = state.bookings.find(b => b.code === code);
+
+      resultBox.classList.remove('hidden');
+
+      if (!booking || booking.status === 'Cancelado') {
+        resultBox.className = 'rounded-2xl p-4 border border-red-300 bg-red-50 text-red-900 text-xs space-y-1';
+        resultBox.innerHTML = `
+          <p class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-circle-xmark text-red-600"></i> Ticket Inválido o Cancelado</p>
+          <p>El código <strong>${code || 'vacío'}</strong> no corresponde a una reserva vigente en el sistema.</p>
+        `;
+        showToast('Ticket No Válido', 'Verifica el código del voucher del pasajero.', 'error');
+        return;
+      }
+
+      booking.status = 'Validado en Ruta';
+      const client = state.clients.find(c => c.id === booking.clientId);
+      const tour = state.tours.find(t => t.id === booking.tourId);
+
+      resultBox.className = 'rounded-2xl p-4 border border-emerald-300 bg-emerald-50 text-emerald-950 text-xs space-y-1.5';
+      resultBox.innerHTML = `
+        <p class="font-bold text-sm text-emerald-800 flex items-center gap-2">
+          <i class="fa-solid fa-circle-check text-emerald-600"></i> ¡Check-in Aprobado en Ruta!
+        </p>
+        <p><strong>Código:</strong> ${booking.code} • <strong>Estado:</strong> Validado en Ruta</p>
+        <p><strong>Pasajero:</strong> ${client ? client.name : ''} (${booking.pax} pax)</p>
+        <p><strong>Excursión:</strong> ${tour ? tour.title : ''}</p>
+      `;
+
+      renderAll();
+      showToast('Ticket Validado', `Check-in confirmado para ${client ? client.name : code}.`);
+    }
+
+    // -----------------------------------------------------------------------
+    // 9. RENDERIZADO GLOBAL SINCRONIZADO
+    // -----------------------------------------------------------------------
+    function renderAll() {
+      updateKPIs();
+      renderPropertiesTable();
+      renderClientsTable();
+      renderToursGrid();
+      populateBookingSelectors();
+      renderBookingsList();
+      populateScannerOptions();
+    }
+
+    // Inicializar tablas en segundo plano al cargar
+    window.addEventListener('DOMContentLoaded', renderAll);
+  </script>
+</body>
+</html>
